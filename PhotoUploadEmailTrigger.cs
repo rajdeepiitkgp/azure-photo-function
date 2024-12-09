@@ -1,5 +1,5 @@
+using Azure.Messaging.EventGrid;
 using Azure.Photo.Function.Constants;
-using Azure.Photo.Function.Models;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
@@ -10,7 +10,7 @@ public class PhotoUploadEmailTrigger(ILogger<PhotoUploadEmailTrigger> logger)
     private readonly ILogger<PhotoUploadEmailTrigger> _logger = logger;
 
     [Function(nameof(PhotoUploadEmailTrigger))]
-    public async Task Run([EventGridTrigger] PhotoEvent photoEvent)
+    public async Task Run([EventGridTrigger] EventGridEvent photoEvent)
     {
         _logger.LogInformation("Event type: {type}, Event subject: {subject}", photoEvent.EventType, photoEvent.Subject);
 
