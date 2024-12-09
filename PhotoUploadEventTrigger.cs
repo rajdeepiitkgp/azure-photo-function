@@ -1,5 +1,5 @@
+using Azure.Messaging.EventGrid;
 using Azure.Photo.Function.Constants;
-using Azure.Photo.Function.Models;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
@@ -10,7 +10,7 @@ public class PhotoUploadEventTrigger(ILogger<PhotoUploadEventTrigger> logger)
     private readonly ILogger<PhotoUploadEventTrigger> _logger = logger;
 
     [Function(nameof(PhotoUploadEventTrigger))]
-    public void Run([EventGridTrigger] PhotoEvent photoEvent)
+    public void Run([EventGridTrigger] EventGridEvent photoEvent)
     {
         try
         {
@@ -23,7 +23,7 @@ public class PhotoUploadEventTrigger(ILogger<PhotoUploadEventTrigger> logger)
             }
             var data = photoEvent.Data;
             if (data is null) return;
-            var blobUrl = data.Url;
+            var blobUrl = data.ToDynamicFromJson(Core.Serialization.JsonPropertyNames.CamelCase)?.Url as string;
 
             _logger.LogInformation("blobUrl is {blobUrl}", blobUrl);
         }

@@ -12,15 +12,23 @@ public class PhotoUploadEmailTrigger(ILogger<PhotoUploadEmailTrigger> logger)
     [Function(nameof(PhotoUploadEmailTrigger))]
     public async Task Run([EventGridTrigger] EventGridEvent photoEvent)
     {
-        _logger.LogInformation("Event type: {type}, Event subject: {subject}", photoEvent.EventType, photoEvent.Subject);
-
-        if (photoEvent.EventType != FunctionConstants.BlobCreatedEvent && photoEvent.EventType != FunctionConstants.BlobDeletedEvent)
+        try
         {
-            _logger.LogInformation("Email Event type - {eventType} not Blob Created or Deleted, hence ignored", photoEvent.EventType);
-            return;
-        }
-        await Task.Delay(30);
+            _logger.LogInformation("Event type: {type}, Event subject: {subject}", photoEvent.EventType, photoEvent.Subject);
 
-        _logger.LogInformation("This is a simulation of Email getting fired");
+            if (photoEvent.EventType != FunctionConstants.BlobCreatedEvent && photoEvent.EventType != FunctionConstants.BlobDeletedEvent)
+            {
+                _logger.LogInformation("Email Event type - {eventType} not Blob Created or Deleted, hence ignored", photoEvent.EventType);
+                return;
+            }
+            await Task.Delay(30);
+
+            _logger.LogInformation("This is a simulation of Email getting fired");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Some error occured while processing function");
+            throw;
+        }
     }
 }
