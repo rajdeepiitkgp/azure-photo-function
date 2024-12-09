@@ -8,7 +8,7 @@ public static class DependencyExtentions
 {
     public static void RegisterDependencies(this IServiceCollection services)
     {
-        services.AddHttpClient<IDiscordService, DiscordService>();
+        services.AddSingleton<IDiscordService, DiscordService>();
     }
 
 }
