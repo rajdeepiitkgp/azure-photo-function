@@ -8,8 +8,8 @@ namespace Azure.Photo.Function;
 public class PhotoUploadEmailTrigger(ILogger<PhotoUploadEmailTrigger> logger)
 {
     private readonly ILogger<PhotoUploadEmailTrigger> _logger = logger;
-
-    [Function(nameof(PhotoUploadEmailTrigger))]
+    // demo function structure
+    // [Function(nameof(PhotoUploadEmailTrigger))]
     public async Task Run([EventGridTrigger] EventGridEvent photoEvent)
     {
         try
