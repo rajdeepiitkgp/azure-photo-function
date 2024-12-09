@@ -1,5 +1,8 @@
+using System.Text.Json;
+using Azure.Core.Serialization;
 using Azure.Messaging.EventGrid;
 using Azure.Photo.Function.Constants;
+using Azure.Photo.Function.Models;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
@@ -23,7 +26,12 @@ public class PhotoUploadEventTrigger(ILogger<PhotoUploadEventTrigger> logger)
             }
             var data = photoEvent.Data;
             if (data is null) return;
-            var blobUrl = data.ToDynamicFromJson()?.url as string;
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            var serializer = new JsonObjectSerializer(options);
+            var blobUrl = data.ToObject<Data>(serializer)?.Url ?? string.Empty;
 
             _logger.LogInformation("blobUrl is {blobUrl}", blobUrl);
         }
