@@ -2,6 +2,7 @@
 // http://localhost:7071/runtime/webhooks/EventGrid?functionName={functionname}
 
 using Azure.Messaging;
+using Azure.Photo.Function.Models;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
@@ -14,10 +15,11 @@ public class PhotoUploadEventTrigger(ILogger<PhotoUploadEventTrigger> logger)
     private const string BlobDeletedEvent = "Microsoft.Storage.BlobDeleted";
 
     [Function(nameof(PhotoUploadEventTrigger))]
-    public void Run([EventGridTrigger] string cloudEvent)
+    public void Run([EventGridTrigger] PhotoEvent cloudEvent)
     {
         // _logger.LogInformation("Event type: {type}, Event subject: {subject}", cloudEvent.Type, cloudEvent.Subject);
-        _logger.LogInformation("Event received: {cloudEvent}", cloudEvent);
+        _logger.LogInformation("Event Type received: {cloudEvent}", cloudEvent.EventType);
+        _logger.LogInformation("Event ID received: {cloudEvent}", cloudEvent.Id);
 
         // if (cloudEvent.Type != "Microsoft.Storage.BlobCreated" && cloudEvent.Type != "Microsoft.Storage.BlobDeleted")
         // {
