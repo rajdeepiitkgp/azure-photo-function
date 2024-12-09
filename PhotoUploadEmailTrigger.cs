@@ -1,4 +1,5 @@
-using Azure.Messaging;
+using Azure.Photo.Function.Constants;
+using Azure.Photo.Function.Models;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
@@ -9,16 +10,16 @@ public class PhotoUploadEmailTrigger(ILogger<PhotoUploadEmailTrigger> logger)
     private readonly ILogger<PhotoUploadEmailTrigger> _logger = logger;
 
     [Function(nameof(PhotoUploadEmailTrigger))]
-    public async Task Run([EventGridTrigger] CloudEvent cloudEvent)
+    public async Task Run([EventGridTrigger] PhotoEvent photoEvent)
     {
-        // _logger.LogInformation("Email Event type: {type}, Event subject: {subject}", cloudEvent.Type, cloudEvent.Subject);
+        _logger.LogInformation("Event type: {type}, Event subject: {subject}", photoEvent.EventType, photoEvent.Subject);
 
-        // if (cloudEvent.Type != "Microsoft.Storage.BlobCreated" && cloudEvent.Type != "Microsoft.Storage.BlobCreated")
-        // {
-        //     _logger.LogInformation("Email Event type not Blob Created or Deleted, hence ignored");
-        //     return;
-        // }
-        await Task.Delay(3000);
+        if (photoEvent.EventType != FunctionConstants.BlobCreatedEvent && photoEvent.EventType != FunctionConstants.BlobDeletedEvent)
+        {
+            _logger.LogInformation("Email Event type - {eventType} not Blob Created or Deleted, hence ignored", photoEvent.EventType);
+            return;
+        }
+        await Task.Delay(30);
 
         _logger.LogInformation("This is a simulation of Email getting fired");
     }

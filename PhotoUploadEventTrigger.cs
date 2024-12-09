@@ -1,7 +1,4 @@
-// Default URL for triggering event grid function in the local environment.
-// http://localhost:7071/runtime/webhooks/EventGrid?functionName={functionname}
-
-using Azure.Messaging;
+using Azure.Photo.Function.Constants;
 using Azure.Photo.Function.Models;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
@@ -11,43 +8,30 @@ namespace Azure.Photo.Function;
 public class PhotoUploadEventTrigger(ILogger<PhotoUploadEventTrigger> logger)
 {
     private readonly ILogger<PhotoUploadEventTrigger> _logger = logger;
-    private const string BlobCreatedEvent = "Microsoft.Storage.BlobCreated";
-    private const string BlobDeletedEvent = "Microsoft.Storage.BlobDeleted";
 
     [Function(nameof(PhotoUploadEventTrigger))]
-    public void Run([EventGridTrigger] PhotoEvent cloudEvent)
+    public void Run([EventGridTrigger] PhotoEvent photoEvent)
     {
-        // _logger.LogInformation("Event type: {type}, Event subject: {subject}", cloudEvent.Type, cloudEvent.Subject);
-        _logger.LogInformation("Event Type received: {cloudEvent}", cloudEvent.EventType);
-        _logger.LogInformation("Event ID received: {cloudEvent}", cloudEvent.Id);
+        try
+        {
+            _logger.LogInformation("Event type: {type}, Event subject: {subject}", photoEvent.EventType, photoEvent.Subject);
 
-        // if (cloudEvent.Type != "Microsoft.Storage.BlobCreated" && cloudEvent.Type != "Microsoft.Storage.BlobDeleted")
-        // {
-        //     _logger.LogInformation("Event type not Blob Created or Deleted, hence ignored");
-        //     return;
-        // }
-        // var data = cloudEvent.Data;
-        // if (data is null) return;
-        // var blobUrl = data.ToDynamicFromJson()["url"];
+            if (photoEvent.EventType != FunctionConstants.BlobCreatedEvent && photoEvent.EventType != FunctionConstants.BlobDeletedEvent)
+            {
+                _logger.LogInformation("Event type - {eventType} not Blob Created or Deleted, hence ignored", photoEvent.EventType);
+                return;
+            }
+            var data = photoEvent.Data;
+            if (data is null) return;
+            var blobUrl = data.Url;
 
-        // _logger.LogInformation($"blobUrl is {blobUrl}");
-        //     try
-        //     {
-        //         if (cloudEvent is null || string.IsNullOrWhiteSpace(cloudEvent.Type))
-        //         {
-        //             throw new ArgumentNullException("Null or Invalid Event Grid Event");
-        //         }
-        //         _logger.LogInformation($@"New Event Grid Event:
-        // - Id=[{cloudEvent.Id}]
-        // - EventType=[{cloudEvent.Type}]
-        // - EventTime=[{cloudEvent.Time}]
-        // - Subject=[{cloudEvent.Subject}]");
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         _logger.LogError(ex, ex.Message);
-        //         throw;
-        //     }
+            _logger.LogInformation("blobUrl is {blobUrl}", blobUrl);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Some error occured while processing function");
+            throw;
+        }
     }
 }
 
