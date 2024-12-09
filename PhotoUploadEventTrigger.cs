@@ -23,7 +23,7 @@ public class PhotoUploadEventTrigger(ILogger<PhotoUploadEventTrigger> logger)
             }
             var data = photoEvent.Data;
             if (data is null) return;
-            var blobUrl = data.ToDynamicFromJson(Core.Serialization.JsonPropertyNames.CamelCase)?.Url as string;
+            var blobUrl = data.ToDynamicFromJson()?.url as string;
 
             _logger.LogInformation("blobUrl is {blobUrl}", blobUrl);
         }
