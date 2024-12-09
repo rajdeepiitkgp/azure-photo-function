@@ -14,9 +14,10 @@ public class PhotoUploadEventTrigger(ILogger<PhotoUploadEventTrigger> logger)
     private const string BlobDeletedEvent = "Microsoft.Storage.BlobDeleted";
 
     [Function(nameof(PhotoUploadEventTrigger))]
-    public void Run([EventGridTrigger] CloudEvent cloudEvent)
+    public void Run([EventGridTrigger] string cloudEvent)
     {
-        _logger.LogInformation("Event type: {type}, Event subject: {subject}", cloudEvent.Type, cloudEvent.Subject);
+        // _logger.LogInformation("Event type: {type}, Event subject: {subject}", cloudEvent.Type, cloudEvent.Subject);
+        _logger.LogInformation("Event received: {cloudEvent}", cloudEvent);
 
         // if (cloudEvent.Type != "Microsoft.Storage.BlobCreated" && cloudEvent.Type != "Microsoft.Storage.BlobDeleted")
         // {
@@ -28,23 +29,23 @@ public class PhotoUploadEventTrigger(ILogger<PhotoUploadEventTrigger> logger)
         // var blobUrl = data.ToDynamicFromJson()["url"];
 
         // _logger.LogInformation($"blobUrl is {blobUrl}");
-        try
-        {
-            if (cloudEvent is null || string.IsNullOrWhiteSpace(cloudEvent.Type))
-            {
-                throw new ArgumentNullException("Null or Invalid Event Grid Event");
-            }
-            _logger.LogInformation($@"New Event Grid Event:
-    - Id=[{cloudEvent.Id}]
-    - EventType=[{cloudEvent.Type}]
-    - EventTime=[{cloudEvent.Time}]
-    - Subject=[{cloudEvent.Subject}]");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, ex.Message);
-            throw;
-        }
+        //     try
+        //     {
+        //         if (cloudEvent is null || string.IsNullOrWhiteSpace(cloudEvent.Type))
+        //         {
+        //             throw new ArgumentNullException("Null or Invalid Event Grid Event");
+        //         }
+        //         _logger.LogInformation($@"New Event Grid Event:
+        // - Id=[{cloudEvent.Id}]
+        // - EventType=[{cloudEvent.Type}]
+        // - EventTime=[{cloudEvent.Time}]
+        // - Subject=[{cloudEvent.Subject}]");
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         _logger.LogError(ex, ex.Message);
+        //         throw;
+        //     }
     }
 }
 
