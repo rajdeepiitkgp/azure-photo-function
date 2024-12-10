@@ -62,11 +62,10 @@ public class DiscordService(IConfiguration configuration, ILogger<DiscordService
             Title = "🗑️ Image Deleted",
             Description = "An existing image has been deleted from your storage account.",
             Color = Color.Red,
-            ImageUrl = encodedUrl,
             Fields = [
                 new(){ Name = "🖼️ Photo Name", Value = photoMetaData.Url.Split('/').Last(), IsInline=true },
                 new(){ Name = "📏 Size", Value = $"{photoMetaData.ContentLength} Bytes", IsInline=true},
-                new(){ Name = "🌐 URI", Value = encodedUrl}
+                new(){ Name = "🌐 URI(🚫🚫Currently Does not Exists🚫🚫)", Value = encodedUrl}
             ],
             Footer = new() { Text = "Azure Blob Storage", IconUrl = "https://azure.microsoft.com/svghandler/storage/" }
 
