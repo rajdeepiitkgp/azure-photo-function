@@ -25,7 +25,7 @@ public class DiscordService(IConfiguration configuration, ILogger<DiscordService
         try
         {
             using var client = new DiscordWebhookClient(_discordWebhookConnectionString);
-            await client.SendMessageAsync(text: "Send a message to this webhook!", embeds: [embed.Build()]);
+            await client.SendMessageAsync(embeds: [embed.Build()]);
             _logger.LogInformation("Successfully sent embed message to Discord.");
         }
         catch (Exception ex)
