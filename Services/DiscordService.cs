@@ -1,4 +1,3 @@
-using System.Web;
 using Azure.Photo.Function.Constants;
 using Azure.Photo.Function.Interface;
 using Azure.Photo.Function.Models;
@@ -37,7 +36,7 @@ public class DiscordService(IConfiguration configuration, ILogger<DiscordService
 
     private static EmbedBuilder GetImageCreatedEventEmbed(Data photoMetaData)
     {
-        var encodedUrl = HttpUtility.UrlEncode(photoMetaData.Url);
+        var encodedUrl = EncodeUrl(photoMetaData.Url);
         var embed = new EmbedBuilder
         {
             Title = "🚀 New Photo Uploaded!",
@@ -57,7 +56,7 @@ public class DiscordService(IConfiguration configuration, ILogger<DiscordService
     }
     private static EmbedBuilder GetImageDeletedEventEmbed(Data photoMetaData)
     {
-        var encodedUrl = HttpUtility.UrlEncode(photoMetaData.Url);
+        var encodedUrl = EncodeUrl(photoMetaData.Url);
         var embed = new EmbedBuilder
         {
             Title = "🗑️ Image Deleted",
@@ -75,5 +74,13 @@ public class DiscordService(IConfiguration configuration, ILogger<DiscordService
 
         return embed;
     }
-
+    private static string EncodeUrl(string fullUrl)
+    {
+        var uri = new Uri(fullUrl);
+        var baseUrl = fullUrl[..(fullUrl.LastIndexOf('/') + 1)];
+        var fileName = uri.Segments[^1];
+        var encodedFileName = Uri.EscapeDataString(fileName);
+        var encodedUrl = $"{baseUrl}{encodedFileName}";
+        return encodedUrl;
+    }
 }
