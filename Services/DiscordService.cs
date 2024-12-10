@@ -1,3 +1,4 @@
+using System.Web;
 using Azure.Photo.Function.Constants;
 using Azure.Photo.Function.Interface;
 using Azure.Photo.Function.Models;
@@ -36,16 +37,17 @@ public class DiscordService(IConfiguration configuration, ILogger<DiscordService
 
     private static EmbedBuilder GetImageCreatedEventEmbed(Data photoMetaData)
     {
+        var encodedUrl = HttpUtility.UrlEncode(photoMetaData.Url);
         var embed = new EmbedBuilder
         {
             Title = "🚀 New Photo Uploaded!",
             Description = "A new photo has just been uploaded to your storage account.",
             Color = Color.Blue,
-            ImageUrl = photoMetaData.Url,
+            ImageUrl = encodedUrl,
             Fields = [
                 new(){Name="🖼️ Photo Name",Value=photoMetaData.Url.Split('/').Last(),IsInline=true},
                 new(){Name="📏 Size",Value=$"{photoMetaData.ContentLength} Bytes",IsInline=true},
-                new(){Name = "🌐 URI", Value = photoMetaData.Url}
+                new(){Name = "🌐 URI", Value = encodedUrl}
             ],
             Footer = new() { Text = "Azure Blob Storage", IconUrl = "https://azure.microsoft.com/svghandler/storage/" }
 
@@ -55,16 +57,17 @@ public class DiscordService(IConfiguration configuration, ILogger<DiscordService
     }
     private static EmbedBuilder GetImageDeletedEventEmbed(Data photoMetaData)
     {
+        var encodedUrl = HttpUtility.UrlEncode(photoMetaData.Url);
         var embed = new EmbedBuilder
         {
             Title = "🗑️ Image Deleted",
             Description = "An existing image has been deleted from your storage account.",
             Color = Color.Red,
-            ImageUrl = photoMetaData.Url,
+            ImageUrl = encodedUrl,
             Fields = [
                 new(){ Name = "🖼️ Photo Name", Value = photoMetaData.Url.Split('/').Last(), IsInline=true },
                 new(){ Name = "📏 Size", Value = $"{photoMetaData.ContentLength} Bytes", IsInline=true},
-                new(){ Name = "🌐 URI", Value = photoMetaData.Url}
+                new(){ Name = "🌐 URI", Value = encodedUrl}
             ],
             Footer = new() { Text = "Azure Blob Storage", IconUrl = "https://azure.microsoft.com/svghandler/storage/" }
 
