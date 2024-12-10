@@ -46,7 +46,7 @@ public class DiscordService(IConfiguration configuration, ILogger<DiscordService
             Fields = [
                 new(){Name="🖼️ Photo Name",Value=photoMetaData.Url.Split('/').Last(),IsInline=true},
                 new(){Name="📏 Size",Value=$"{photoMetaData.ContentLength} Bytes",IsInline=true},
-                new(){Name = "🌐 URI", Value = encodedUrl}
+                new(){Name = "🌐 URI", Value = $"[Link to the photo]({encodedUrl})"}
             ],
             Footer = new() { Text = "Azure Blob Storage", IconUrl = "https://azure.microsoft.com/svghandler/storage/" }
 
@@ -65,7 +65,7 @@ public class DiscordService(IConfiguration configuration, ILogger<DiscordService
             Fields = [
                 new(){ Name = "🖼️ Photo Name", Value = photoMetaData.Url.Split('/').Last(), IsInline=true },
                 new(){ Name = "📏 Size", Value = $"{photoMetaData.ContentLength} Bytes", IsInline=true},
-                new(){ Name = "🌐 URI(🚫🚫Currently Does not Exists🚫🚫)", Value = encodedUrl}
+                new(){ Name = "🌐 URI(🚫🚫Currently Does not Exists🚫🚫)", Value = $"[Link to the photo]({encodedUrl})"}
             ],
             Footer = new() { Text = "Azure Blob Storage", IconUrl = "https://azure.microsoft.com/svghandler/storage/" }
 
